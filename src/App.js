@@ -41,13 +41,20 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log('montou');
     this.fetchApi();
   }
 
   shouldComponentUpdate(nextProps, NextState) {
+    console.log('verifica update');
     const eleMesmo = NextState.imgPath.includes('terrier');
+    if (eleMesmo) {alert('Terriers odeiam tirar fotos!!')};
     const sim = eleMesmo ? false : true;
-    return sim;  
+    return sim;
+  }
+
+  componentDidUpdate() {
+    console.log('atualizou');
   }
 
   loadingAction() {
