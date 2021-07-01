@@ -7,15 +7,19 @@ class App extends React.Component {
     super();
     this.fetchApi = this.fetchApi.bind(this);
     this.guardaRaca = this.guardaRaca.bind(this);
+    this.loadingAction = this.loadingAction.bind(this);
     this.state = {
       imgPath: '',
       flag: false,
+      previousPath: '',
     };
   }
 
   async fetchApi() {
+    const { imgPath } = this.state;
     this.setState({
       flag:false,
+      previousPath: imgPath,
     });
     const apiFetch = await fetch('https://dog.ceo/api/breeds/image/random');
     const apiObj = await apiFetch.json();
@@ -26,12 +30,11 @@ class App extends React.Component {
   }
 
   guardaRaca() {
-    const { imgPath } = this.state;
+    const { imgPath, previousPath } = this.state;
     const race = imgPath.split('/')[4];
-    console.log(race);
+    if(race) { alert(`esse foi o ${race}! muito bonito, né??`) };
     if (localStorage.dogUrl) {
-      console.log('entrei');
-      localStorage['dogUrl'] = imgPath;
+      localStorage.dogUrl = previousPath;
     } else{
       localStorage.setItem('dogUrl', imgPath);
     }
@@ -44,19 +47,19 @@ class App extends React.Component {
   shouldComponentUpdate(nextProps, NextState) {
     const eleMesmo = NextState.imgPath.includes('terrier');
     const sim = eleMesmo ? false : true;
-    console.log('confere');
     return sim;  
   }
 
-  componentDidUpdate() {
+  loadingAction() {
     this.guardaRaca();
+    return (<h3>Loading...</h3>);
   }
 
   render(){
     const { imgPath, flag } = this.state;
     return (
       <div className="App">
-        { (flag) ? <Main imgPath={ imgPath } /> : <h3>Loading...</h3> }
+        { (flag) ? <Main imgPath={ imgPath } /> : this.loadingAction() }
         <button onClick={() => this.fetchApi()} >Atualizar</button>
       </div>
     );
